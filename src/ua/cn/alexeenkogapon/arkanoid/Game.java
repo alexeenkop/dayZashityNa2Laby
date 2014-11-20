@@ -42,7 +42,7 @@ public class Game {
 		/* если блоков уже не осталось или мы еще их не проинициализировали */
 		if ((cntBlocks == row * column) || (!init)) {
 			/* если шар находится в нижней части экрана */
-			if (ball.getPos().y > ball.getSCREEN_HEIGHT() / 2) {
+			if (ball.getPosy() > (ball.getSCREEN_HEIGHT() / 2 + ball.getSCREEN_HEIGHT() / 4)) {
 				/* делаем равные отступы слева и справа */
 				int tabh = (ball.getSCREEN_WIDTH() - (Block.WIDTH + 5) * column) / 2;
 				/* делаем равные отступы сверху и снизу */

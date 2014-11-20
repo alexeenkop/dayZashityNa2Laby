@@ -7,7 +7,8 @@ import android.graphics.Point;
 import android.widget.Toast;
 
 public class Ball {
-	private Point pos;
+	private double posx;
+	private double posy;
 	private double radius = 10;
 	private double vx = 0;// вектор направления движения
 	private double vy = 0;// вектор направления движения
@@ -17,16 +18,20 @@ public class Ball {
 	private int life = 3;// счетчик жизней
 	private int hits = 0;// счетчик количества ударов
 
-	public Ball(int x, int y) {
+	public Ball(double x, double y) {
 		super();
-		this.pos = new Point(x, y);
+		this.posx = x;
+		this.posy = y;
 	}
-	public void setPos(int x, int y) {
-		this.pos.x = x;
-		this.pos.y = y;
+	public void setPos(double x, double y) {
+		this.posx = x;
+		this.posy = y;
 	}
-	public Point getPos() {
-		return pos;
+	public double getPosx() {
+		return posx;
+	}
+	public double getPosy() {
+		return posy;
 	}
 	public int getLife() {
 		return life;
@@ -100,24 +105,41 @@ public class Ball {
 		setSCREEN_WIDTH(canvas.getWidth());
 		setSCREEN_HEIGHT(canvas.getHeight());
 	}
+	
+	public void BallVector(double x, double y)
+	{
+	    vx=x;
+	    vy=y;
 
+	    // Теперь нужно превратить наш вектор в единичную длину, сначала найдём длину вектора
+	    // Это корень квадратный из суммы компонентов вектора, которые в свою очередь были возведены в квадрат
+	    double len=Math.sqrt(vx*vx+vy*vy);
+
+	    // Теперь надо каждый компонент разделить на длину (это называется нормализация вектора)
+	    vx/=len;
+	    vy/=len;
+	}
+	
 	public void move() {
 		if (hits == 3) {// если количество убитых блока = 3
 			incSpeed();// увеличиваем скорость
 			setHits(0);// обнуляем счетчик
 		}
-		setPos((int)(pos.x + vx * speed), (int)(pos.y + vy * speed));// передвигаем шар
-		if (pos.x <= getRadius()) {
-			setVector(-vx, vy); // отскакиваем от левой стены
+		setPos(posx + vx * speed, posy + vy * speed);// передвигаем шар
+		if (posx <= getRadius()) {
+			BallVector(-vx, vy);
+			//setVector(-vx, vy); // отскакиваем от левой стены
 		}
-		if (pos.x >= getSCREEN_WIDTH() - getRadius()) {
-			setVector(-vx, vy); // и от правой
+		if (posx >= getSCREEN_WIDTH() - getRadius()) {
+			BallVector(-vx, vy);
+			//setVector(-vx, vy); // и от правой
 		}
-		if (pos.y <= getRadius()) {
-			setVector(vx, -vy); // и от потолка
+		if (posy <= getRadius()) {
+			BallVector(vx, -vy);
+			//setVector(vx, -vy); // и от потолка
 		}
 
-		if (pos.y >= getSCREEN_HEIGHT() + getRadius()){
+		if (posy >= getSCREEN_HEIGHT() + getRadius()){
 			//setPos(getSCREEN_WIDTH() / 2, getSCREEN_HEIGHT() - getRadius() - Plate.getHeight() - 1);
 			//setVector(0, 0);
 			decrLife();
@@ -130,7 +152,7 @@ public class Ball {
 	public void draw(Canvas canvas) {
 		Paint p = new Paint();
 		p.setColor(Color.BLUE);
-		canvas.drawCircle((float) pos.x, (float) pos.y, (float) getRadius(), p);
+		canvas.drawCircle((float) posx, (float) posy, (float) getRadius(), p);
 	}
 
 	public void pointsOfTouch() {
