@@ -101,7 +101,19 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback{
 						}
 						game.drawStatistic(canvas, ball);
 						
-						plate.move(ball.getPosx(), canvas.getWidth());
+						
+						if (MainActivity.OrientationData[2] >= -0.1 && MainActivity.OrientationData[2] <= 0.1) {
+							plate.move(plate.getPosx(), canvas.getWidth());
+						}else if (MainActivity.OrientationData[2] < -0.1 && MainActivity.OrientationData[2] > -0.6) {
+							plate.move(plate.getPosx()-MainActivity.OrientationData[2]*5, canvas.getWidth());
+						}else if (MainActivity.OrientationData[2] <= -0.6 && MainActivity.OrientationData[2] >= -1.2) {
+							plate.move(plate.getPosx()-MainActivity.OrientationData[2]*10, canvas.getWidth());
+						}else if (MainActivity.OrientationData[2] > 0.1 && MainActivity.OrientationData[2] < 0.6) {
+							plate.move(plate.getPosx()+MainActivity.OrientationData[2]*5, canvas.getWidth());
+						}else if (MainActivity.OrientationData[2] >= 0.6 && MainActivity.OrientationData[2] <= 1.2) {
+							plate.move(plate.getPosx()+MainActivity.OrientationData[2]*10, canvas.getWidth());
+						}
+						//plate.move(ball.getPosx(), canvas.getWidth());
 						
 						ball.move();// передвигаем шарик
 					} finally {
