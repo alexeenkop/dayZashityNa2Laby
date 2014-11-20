@@ -100,7 +100,9 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback{
 							ball.setLife(3);
 						}
 						game.drawStatistic(canvas, ball);
+						
 						plate.move(ball.getPosx(), canvas.getWidth());
+						
 						ball.move();// передвигаем шарик
 					} finally {
 						if (canvas != null) {

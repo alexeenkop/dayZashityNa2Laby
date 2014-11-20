@@ -92,5 +92,14 @@ public class Game {
 		canvas.drawText("Score: " + this.score,
 				(float) canvas.getWidth() / 2,
 				(float) canvas.getHeight() / 2 + 260, mScorePaint);
+		canvas.drawText("xy: " + MainActivity.OrientationData[0],
+				(float) canvas.getWidth() / 2,
+				(float) canvas.getHeight() / 2 + 280, mScorePaint);
+		canvas.drawText("xz: " + MainActivity.OrientationData[1],
+				(float) canvas.getWidth() / 2,
+				(float) canvas.getHeight() / 2 + 300, mScorePaint);
+		canvas.drawText("zy: " + MainActivity.OrientationData[2],
+				(float) canvas.getWidth() / 2,
+				(float) canvas.getHeight() / 2 + 320, mScorePaint);
 	}
 }

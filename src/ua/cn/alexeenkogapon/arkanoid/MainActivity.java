@@ -21,13 +21,45 @@ import android.view.SurfaceView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener {
+
+	private SensorManager msensorManager;
+	//private Sensor mOrientation;
+
+	public static float xy_angle;
+	public static float xz_angle;
+	public static float zy_angle;
 	
+	public static float[] rotationMatrix;     //Матрица поворота
+	public static float[] accelData;           //Данные с акселерометра
+	public static float[] magnetData;       //Данные геомагнитного датчика
+	public static float[] OrientationData; //Матрица положения в пространстве
+	
+	//private TextView xyView;
+	//private TextView xzView;
+	//private TextView zyView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//msensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE); // Получаем менеджер сенсоров
+	   // mOrientation = msensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION); // Получаем датчик положения
+	    
+	    msensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        
+	    rotationMatrix = new float[16];
+	    accelData = new float[3];
+	    magnetData = new float[3];
+	    OrientationData = new float[3];
+	    
 		setContentView(new DrawView(this));
+		
+		//mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE); // Получаем менеджер сенсоров
+	   // mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION); // Получаем датчик положения
+	    
+	   // xyView = (TextView) findViewById(R.id.xyValue);  //
+	   // xzView = (TextView) findViewById(R.id.xzValue);  // Наши текстовые поля для вывода показаний
+	   // zyView = (TextView) findViewById(R.id.zyValue);  //
 
 	}
 
@@ -50,6 +82,46 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+    protected void onResume() {
+    	super.onResume();
+    	msensorManager.registerListener(this, msensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI );
+    	msensorManager.registerListener(this, msensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_UI );
+    }
 	
+	@Override
+    protected void onPause() {
+        super.onPause();
+        msensorManager.unregisterListener(this);
+    }
+	
+	private void loadNewSensorData(SensorEvent event) {
+        final int type = event.sensor.getType(); //Определяем тип датчика
+        if (type == Sensor.TYPE_ACCELEROMETER) { //Если акселерометр
+                accelData = event.values.clone();
+        }
+       
+        if (type == Sensor.TYPE_MAGNETIC_FIELD) { //Если геомагнитный датчик
+                magnetData = event.values.clone();
+        }
+    }
+	
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		//xy_angle = event.values[0]; //Плоскость XY
+	    //xz_angle = event.values[1]; //Плоскость XZ
+	    //zy_angle = event.values[2]; //Плоскость ZY
+	    
+	    loadNewSensorData(event); // Получаем данные с датчика
+        SensorManager.getRotationMatrix(rotationMatrix, null, accelData, magnetData); //Получаем матрицу поворота
+        SensorManager.getOrientation(rotationMatrix, OrientationData); //Получаем данные ориентации устройства в пространстве
+        
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
 
 }
